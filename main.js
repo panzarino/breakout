@@ -29,12 +29,19 @@ function drawBall(){
 }
 
 // draw the paddle
-function drawPaddle() {
+function drawPaddle(){
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
     ctx.fillStyle = "#0095DD";
     ctx.fill();
     ctx.closePath();
+}
+
+function endGame(){
+    window.clearInterval(interval);
+    alert("GAME OVER");
+    // reset the game
+    // document.location.reload();
 }
 
 // draw the entire game
@@ -51,18 +58,26 @@ function draw(){
     y += dy;
     
     // ball bounce off the walls
-    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius){
         dx = -dx;
     }
-    if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
+    if(y + dy < ballRadius){
         dy = -dy;
+    }
+    else if(y + dy > canvas.height-ballRadius){
+        if(x > paddleX && x < paddleX + paddleWidth){
+            dy = -dy;
+        }
+        else{
+            endGame();
+        }
     }
     
     // move paddle on key press
-    if(rightPressed && paddleX < canvas.width-paddleWidth) {
+    if(rightPressed && paddleX < canvas.width-paddleWidth){
         paddleX += 5;
     }
-    else if(leftPressed && paddleX > 0) {
+    else if(leftPressed && paddleX > 0){
         paddleX -= 5;
     }
 }
@@ -72,24 +87,24 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 // check if right or left keys pressed
-function keyDownHandler(e) {
-    if(e.keyCode == 39) {
+function keyDownHandler(e){
+    if(e.keyCode == 39){
         rightPressed = true;
     }
-    else if(e.keyCode == 37) {
+    else if(e.keyCode == 37){
         leftPressed = true;
     }
 }
 
 // check if right or left keys released
-function keyUpHandler(e) {
-    if(e.keyCode == 39) {
+function keyUpHandler(e){
+    if(e.keyCode == 39){
         rightPressed = false;
     }
-    else if(e.keyCode == 37) {
+    else if(e.keyCode == 37){
         leftPressed = false;
     }
 }
 
 // redraw every 10 milliseconds
-setInterval(draw, 10);
+var interval = setInterval(draw, 10);
