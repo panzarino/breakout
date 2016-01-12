@@ -7,8 +7,8 @@ var color = "#0095DD";
 // get starting position for ball
 var x = canvas.width/2;
 var y = canvas.height-30;
-var dx = 2;
-var dy = -2;
+var dx = 4;
+var dy = -4;
 
 // ball variables
 var ballRadius = 10;
@@ -33,6 +33,9 @@ var brickOffsetLeft = 30;
 
 // game score
 var score = 0;
+
+// repeating animation
+var interval;
 
 // array to hold bricks
 var bricks = [];
@@ -108,56 +111,64 @@ function brickHit(){
 
 // game over
 function endGame(){
-    clearInterval(interval);
+    window.cancelAnimationFrame(interval);
     alert("GAME OVER");
     document.location.reload();
 }
 
 function winGame(){
-    clearInterval(interval);
+    window.cancelAnimationFrame(interval);
     alert("YOU WIN, CONGRATULATIONS!");
     document.location.reload();
 }
 
 // draw the entire game
 function draw(){
-    // reset canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // draw parts
-    brickHit();
-    drawBricks();
-    drawBall();
-    drawPaddle();
-    drawScore();
-    
-    // change ball coordinates
-    x += dx;
-    y += dy;
-    
-    // ball bounce off the walls
-    if (x + dx > canvas.width-ballRadius || x + dx < ballRadius){
-        dx = -dx;
-    }
-    if (y + dy < ballRadius){
-        dy = -dy;
-    }
-    else if (y + dy > canvas.height-ballRadius){
-        if (x > paddleX && x < paddleX + paddleWidth){
+    // keep animating at correct rate
+    setTimeout(function() {
+        
+        // keep updating
+        interval = window.requestAnimationFrame(draw);
+        
+        // reset canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // draw parts
+        brickHit();
+        drawBricks();
+        drawBall();
+        drawPaddle();
+        drawScore();
+        
+        // change ball coordinates
+        x += dx;
+        y += dy;
+        
+        // ball bounce off the walls
+        if (x + dx > canvas.width-ballRadius || x + dx < ballRadius){
+            dx = -dx;
+        }
+        if (y + dy < ballRadius){
             dy = -dy;
         }
-        else {
-            endGame();
+        else if (y + dy > canvas.height-ballRadius){
+            if (x > paddleX && x < paddleX + paddleWidth){
+                dy = -dy;
+            }
+            else {
+                endGame();
+            }
         }
-    }
-    
-    // move paddle on key press
-    if(rightPressed && paddleX < canvas.width-paddleWidth){
-        paddleX += 5;
-    }
-    else if(leftPressed && paddleX > 0){
-        paddleX -= 5;
-    }
+        
+        // move paddle on key press
+        if(rightPressed && paddleX < canvas.width-paddleWidth){
+            paddleX += 7;
+        }
+        else if(leftPressed && paddleX > 0){
+            paddleX -= 7;
+        }
+    }, 20);
 }
 
 // events
@@ -184,5 +195,5 @@ function keyUpHandler(e){
     }
 }
 
-// redraw every 10 milliseconds
-var interval = setInterval(draw, 10);
+// start
+draw();
