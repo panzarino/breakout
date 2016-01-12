@@ -1,6 +1,9 @@
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 
+// item color
+var color = "#0095DD";
+
 // get starting position for ball
 var x = canvas.width/2;
 var y = canvas.height-30;
@@ -33,7 +36,7 @@ var bricks = [];
 for(var c=0; c<brickColumnCount; c++){
     bricks[c] = [];
     for(var r=0; r<brickRowCount; r++){
-        bricks[c][r] = {x: 0, y: 0};
+        bricks[c][r] = {x: 0, y: 0, status: 1};
     }
 }
 
@@ -41,7 +44,7 @@ for(var c=0; c<brickColumnCount; c++){
 function drawBall(){
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = color;
     ctx.fill();
     ctx.closePath();
 }
@@ -50,24 +53,40 @@ function drawBall(){
 function drawPaddle(){
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = color;
     ctx.fill();
     ctx.closePath();
 }
 
 // draw the bricks
-function drawBricks() {
+function drawBricks(){
     for(var c=0; c<brickColumnCount; c++) {
         for(var r=0; r<brickRowCount; r++) {
-            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
-            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
-            ctx.beginPath();
-            ctx.rect(brickX, brickY, brickWidth, brickHeight);
-            ctx.fillStyle = "#0095DD";
-            ctx.fill();
-            ctx.closePath();
+            if(bricks[c][r].status == 1) {
+                var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                ctx.beginPath();
+                ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+    }
+}
+
+function brickHit(){
+    for(c=0; c<brickColumnCount; c++){
+        for(r=0; r<brickRowCount; r++){
+            var b = bricks[c][r];
+            if(b.status == 1){
+                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                    dy = -dy;
+                    b.status = 0;
+                }
+            }
         }
     }
 }
@@ -86,6 +105,7 @@ function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // draw parts
+    brickHit();
     drawBricks();
     drawBall();
     drawPaddle();
