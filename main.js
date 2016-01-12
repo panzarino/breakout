@@ -7,8 +7,8 @@ var color = "#0095DD";
 // get starting position for ball
 var x = canvas.width/2;
 var y = canvas.height-30;
-var dx = 2;
-var dy = -2;
+var dx = 4;
+var dy = -4;
 
 // ball variables
 var ballRadius = 10;
@@ -36,9 +36,9 @@ var score = 0;
 
 // array to hold bricks
 var bricks = [];
-for(var c=0; c<brickColumnCount; c++){
+for (var c=0; c<brickColumnCount; c++){
     bricks[c] = [];
-    for(var r=0; r<brickRowCount; r++){
+    for (var r=0; r<brickRowCount; r++){
         bricks[c][r] = {x: 0, y: 0, status: 1};
     }
 }
@@ -63,9 +63,9 @@ function drawPaddle(){
 
 // draw the bricks
 function drawBricks(){
-    for(var c=0; c<brickColumnCount; c++) {
-        for(var r=0; r<brickRowCount; r++) {
-            if(bricks[c][r].status == 1) {
+    for (var c=0; c<brickColumnCount; c++) {
+        for (var r=0; r<brickRowCount; r++) {
+            if (bricks[c][r].status == 1) {
                 var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
                 var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
                 bricks[c][r].x = brickX;
@@ -89,15 +89,15 @@ function drawScore() {
 
 // calculate if a brick is hit
 function brickHit(){
-    for(c=0; c<brickColumnCount; c++){
-        for(r=0; r<brickRowCount; r++){
+    for (c=0; c<brickColumnCount; c++){
+        for (r=0; r<brickRowCount; r++){
             var b = bricks[c][r];
-            if(b.status == 1){
-                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight){
+            if (b.status == 1){
+                if (x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight){
                     dy = -dy;
                     b.status = 0;
                     score++;
-                    if(score == brickRowCount*brickColumnCount){
+                    if (score == brickRowCount*brickColumnCount){
                         winGame();
                     }
                 }
@@ -108,19 +108,21 @@ function brickHit(){
 
 // game over
 function endGame(){
-    window.clearInterval(interval);
     alert("GAME OVER");
     document.location.reload();
 }
 
 function winGame(){
-    window.clearInterval(interval);
     alert("YOU WIN, CONGRATULATIONS!");
     document.location.reload();
 }
 
 // draw the entire game
 function draw(){
+    setTimeout(function() {
+    
+    requestAnimationFrame(draw);
+    
     // reset canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -136,42 +138,34 @@ function draw(){
     y += dy;
     
     // ball bounce off the walls
-    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius){
+    if (x + dx > canvas.width-ballRadius || x + dx < ballRadius){
         dx = -dx;
     }
-    if(y + dy < ballRadius){
+    if (y + dy < ballRadius){
         dy = -dy;
     }
-    else if(y + dy > canvas.height-ballRadius){
-        if(x > paddleX && x < paddleX + paddleWidth){
+    else if (y + dy > canvas.height-ballRadius){
+        if (x > paddleX && x < paddleX + paddleWidth){
             dy = -dy;
         }
-        else{
+        else {
             endGame();
         }
     }
     
     // move paddle on key press
     if(rightPressed && paddleX < canvas.width-paddleWidth){
-        paddleX += 5;
+        paddleX += 6;
     }
     else if(leftPressed && paddleX > 0){
-        paddleX -= 5;
+        paddleX -= 6;
     }
+    }, 20);
 }
 
 // events
-document.addEventListener("mousemove", mouseMoveHandler, false);
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-
-// move paddle to mouse
-function mouseMoveHandler(e){
-    var relativeX = e.clientX - canvas.offsetLeft;
-    if(relativeX > 0 && relativeX < canvas.width){
-        paddleX = relativeX - paddleWidth/2;
-    }
-}
 
 // check if right or left keys pressed
 function keyDownHandler(e){
@@ -193,5 +187,5 @@ function keyUpHandler(e){
     }
 }
 
-// redraw every 10 milliseconds
-var interval = setInterval(draw, 10);
+// start
+draw();
