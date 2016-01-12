@@ -10,6 +10,15 @@ var dy = -2;
 // ball variables
 var ballRadius = 10;
 
+// paddle variables
+var paddleHeight = 10;
+var paddleWidth = 75;
+var paddleX = (canvas.width-paddleWidth)/2;
+
+// keypress variables
+var rightPressed = false;
+var leftPressed = false;
+
 // draw the ball
 function drawBall(){
     ctx.beginPath();
@@ -19,19 +28,66 @@ function drawBall(){
     ctx.closePath();
 }
 
-// draw the entire canvas
+// draw the paddle
+function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+// draw the entire game
 function draw(){
+    // reset canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // draw parts
     drawBall();
+    drawPaddle();
+    
+    // change ball coordinates
     x += dx;
     y += dy;
     
-    // bounce off the walls
+    // ball bounce off the walls
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
         dx = -dx;
     }
     if(y + dy > canvas.height-ballRadius || y + dy < ballRadius) {
         dy = -dy;
+    }
+    
+    // move paddle on key press
+    if(rightPressed && paddleX < canvas.width-paddleWidth) {
+        paddleX += 5;
+    }
+    else if(leftPressed && paddleX > 0) {
+        paddleX -= 5;
+    }
+}
+
+// keypress events
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+
+// check if right or left keys pressed
+function keyDownHandler(e) {
+    if(e.keyCode == 39) {
+        rightPressed = true;
+    }
+    else if(e.keyCode == 37) {
+        leftPressed = true;
+    }
+}
+
+// check if right or left keys released
+function keyUpHandler(e) {
+    if(e.keyCode == 39) {
+        rightPressed = false;
+    }
+    else if(e.keyCode == 37) {
+        leftPressed = false;
     }
 }
 
