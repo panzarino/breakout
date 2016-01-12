@@ -7,8 +7,8 @@ var color = "#0095DD";
 // get starting position for ball
 var x = canvas.width/2;
 var y = canvas.height-30;
-var dx = 4;
-var dy = -4;
+var dx = 2;
+var dy = -2;
 
 // ball variables
 var ballRadius = 10;
@@ -108,21 +108,19 @@ function brickHit(){
 
 // game over
 function endGame(){
+    clearInterval(interval);
     alert("GAME OVER");
     document.location.reload();
 }
 
 function winGame(){
+    clearInterval(interval);
     alert("YOU WIN, CONGRATULATIONS!");
     document.location.reload();
 }
 
 // draw the entire game
 function draw(){
-    setTimeout(function() {
-    
-    requestAnimationFrame(draw);
-    
     // reset canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -155,12 +153,11 @@ function draw(){
     
     // move paddle on key press
     if(rightPressed && paddleX < canvas.width-paddleWidth){
-        paddleX += 6;
+        paddleX += 5;
     }
     else if(leftPressed && paddleX > 0){
-        paddleX -= 6;
+        paddleX -= 5;
     }
-    }, 20);
 }
 
 // events
@@ -187,5 +184,5 @@ function keyUpHandler(e){
     }
 }
 
-// start
-draw();
+// redraw every 10 milliseconds
+var interval = setInterval(draw, 10);
