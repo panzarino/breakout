@@ -31,6 +31,9 @@ var brickPadding = 10;
 var brickOffsetTop = 30;
 var brickOffsetLeft = 30;
 
+// game score
+var score = 0;
+
 // array to hold bricks
 var bricks = [];
 for(var c=0; c<brickColumnCount; c++){
@@ -77,14 +80,26 @@ function drawBricks(){
     }
 }
 
+// draw the score
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: "+score, 8, 20);
+}
+
+// calculate if a brick is hit
 function brickHit(){
     for(c=0; c<brickColumnCount; c++){
         for(r=0; r<brickRowCount; r++){
             var b = bricks[c][r];
             if(b.status == 1){
-                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight){
                     dy = -dy;
                     b.status = 0;
+                    score++;
+                    if(score == brickRowCount*brickColumnCount){
+                        winGame();
+                    }
                 }
             }
         }
@@ -95,8 +110,13 @@ function brickHit(){
 function endGame(){
     window.clearInterval(interval);
     alert("GAME OVER");
-    // reset the game
-    // document.location.reload();
+    document.location.reload();
+}
+
+function winGame(){
+    window.clearInterval(interval);
+    alert("YOU WIN, CONGRATULATIONS!");
+    document.location.reload();
 }
 
 // draw the entire game
@@ -109,6 +129,7 @@ function draw(){
     drawBricks();
     drawBall();
     drawPaddle();
+    drawScore();
     
     // change ball coordinates
     x += dx;
