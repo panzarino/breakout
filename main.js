@@ -1,8 +1,10 @@
 var canvas = document.getElementById("game");
 var ctx = canvas.getContext("2d");
 
-// item color
-var color = "#0095DD";
+// object colors
+var ballColor = "#0095DD";
+var paddleColor = "#ff1a1a";
+var brickColor = "#33cc33";
 
 // get starting position for ball
 var x = canvas.width/2;
@@ -50,7 +52,7 @@ for (var c=0; c<brickColumnCount; c++){
 function drawBall(){
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = color;
+    ctx.fillStyle = ballColor;
     ctx.fill();
     ctx.closePath();
 }
@@ -59,7 +61,7 @@ function drawBall(){
 function drawPaddle(){
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-    ctx.fillStyle = color;
+    ctx.fillStyle = paddleColor;
     ctx.fill();
     ctx.closePath();
 }
@@ -75,7 +77,7 @@ function drawBricks(){
                 bricks[c][r].y = brickY;
                 ctx.beginPath();
                 ctx.rect(brickX, brickY, brickWidth, brickHeight);
-                ctx.fillStyle = color;
+                ctx.fillStyle = brickColor;
                 ctx.fill();
                 ctx.closePath();
             }
@@ -195,5 +197,5 @@ function keyUpHandler(e){
     }
 }
 
-// start
-draw();
+// start game
+interval = window.requestAnimationFrame(draw);
