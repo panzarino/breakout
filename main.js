@@ -6,45 +6,64 @@ var ballColor = "#0095DD";
 var paddleColor = "#ff1a1a";
 var brickColor = "#33cc33";
 
-// get starting position for ball
-var x = canvas.width/2;
-var y = canvas.height-30;
-var dx = 4;
-var dy = -4;
-
-// ball variables
-var ballRadius = 10;
-
-// paddle variables
-var paddleHeight = 10;
-var paddleWidth = 75;
-var paddleX = (canvas.width-paddleWidth)/2;
-
-// keypress variables
-var rightPressed = false;
-var leftPressed = false;
-
-// brick variables
-var brickRowCount = 3;
-var brickColumnCount = 5;
-var brickWidth = 75;
-var brickHeight = 20;
-var brickPadding = 10;
-var brickOffsetTop = 30;
-var brickOffsetLeft = 30;
-
-// game score
-var score = 0;
-
-// repeating animation
+// global object variables
+var x;
+var y;
+var dx;
+var dy;
+var ballRadius;
+var paddleHeight;
+var paddleWidth;
+var paddleX;
+var rightPressed;
+var leftPressed;
+var brickRowCount;
+var brickColumnCount;
+var brickWidth;
+var brickHeight;
+var brickPadding;
+var brickOffsetTop;
+var brickOffsetLeft;
+var score;
 var interval;
-
-// array to hold bricks
 var bricks = [];
-for (var c=0; c<brickColumnCount; c++){
-    bricks[c] = [];
-    for (var r=0; r<brickRowCount; r++){
-        bricks[c][r] = {x: 0, y: 0, status: 1};
+
+// set all values to starting values
+function setDefault(){
+    // ball variables
+    x = canvas.width/2;
+    y = canvas.height-30;
+    dx = 4;
+    dy = -4;
+    ballRadius = 10;
+    
+    // paddle variables
+    paddleHeight = 10;
+    paddleWidth = 75;
+    paddleX = (canvas.width-paddleWidth)/2;
+    
+    // keypress variables
+    rightPressed = false;
+    leftPressed = false;
+    
+    // brick variables
+    brickRowCount = 3;
+    brickColumnCount = 5;
+    brickWidth = 75;
+    brickHeight = 20;
+    brickPadding = 10;
+    brickOffsetTop = 30;
+    brickOffsetLeft = 30;
+    
+    // game score
+    score = 0;
+    
+    // array to hold bricks
+    for (var c=0; c<brickColumnCount; c++){
+        bricks[c] = [];
+        for (var r=0; r<brickRowCount; r++){
+            bricks[c][r] = {x: 0, y: 0, status: 1};
+        }
     }
 }
 
@@ -115,13 +134,15 @@ function brickHit(){
 function endGame(){
     window.cancelAnimationFrame(interval);
     alert("GAME OVER");
-    document.location.reload();
+    setDefault();
+    interval = window.requestAnimationFrame(draw);
 }
 
 function winGame(){
     window.cancelAnimationFrame(interval);
     alert("YOU WIN, CONGRATULATIONS!");
-    document.location.reload();
+    setDefault();
+    interval = window.requestAnimationFrame(draw);
 }
 
 // draw the entire game
@@ -198,4 +219,5 @@ function keyUpHandler(e){
 }
 
 // start game
+setDefault();
 interval = window.requestAnimationFrame(draw);
