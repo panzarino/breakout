@@ -27,6 +27,7 @@ var brickOffsetLeft;
 var score;
 var interval;
 var bricks = [];
+var pause;
 
 // set all values to starting values
 function setDefault(){
@@ -65,6 +66,9 @@ function setDefault(){
             bricks[c][r] = {x: 0, y: 0, status: 1};
         }
     }
+    
+    // start game not paused
+    pause = false;
 }
 
 // draw the ball
@@ -113,8 +117,8 @@ function drawScore() {
 
 // calculate if a brick is hit
 function brickHit(){
-    for (c=0; c<brickColumnCount; c++){
-        for (r=0; r<brickRowCount; r++){
+    for (var c=0; c<brickColumnCount; c++){
+        for (var r=0; r<brickRowCount; r++){
             var b = bricks[c][r];
             if (b.status == 1){
                 if (x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight){
@@ -135,13 +139,17 @@ function endGame(){
     window.cancelAnimationFrame(interval);
     alert("GAME OVER");
     setDefault();
-    interval = window.requestAnimationFrame(draw);
+    startGame();
 }
 
 function winGame(){
     window.cancelAnimationFrame(interval);
     alert("YOU WIN, CONGRATULATIONS!");
     setDefault();
+    startGame();
+}
+
+function startGame(){
     interval = window.requestAnimationFrame(draw);
 }
 
@@ -152,7 +160,9 @@ function draw(){
     setTimeout(function() {
         
         // keep updating
-        interval = window.requestAnimationFrame(draw);
+        if (!pause){
+            interval = window.requestAnimationFrame(draw);
+        }
         
         // reset canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -206,6 +216,15 @@ function keyDownHandler(e){
     else if(e.keyCode == 37){
         leftPressed = true;
     }
+    else if(e.keyCode == 32){
+        if (pause){
+            pause = false;
+            startGame();
+        }
+        else if(!pause){
+            pause = true;
+        }
+    }
 }
 
 // check if right or left keys released
@@ -220,4 +239,4 @@ function keyUpHandler(e){
 
 // start game
 setDefault();
-interval = window.requestAnimationFrame(draw);
+startGame();
